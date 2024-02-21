@@ -13,5 +13,7 @@ jobs:
       - shell: bash
         env:
           SUPER_SECRET: ${{ secrets.DOCKER_PASSWORD }}
+          
         run: |
+          docker login -u shivaprasad --password $SUPER_SECRET
           echo "$SUPER_SECRET"
