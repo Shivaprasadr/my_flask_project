@@ -6,6 +6,7 @@ flask --app flaskr init-db
 flask --app flaskr run --debug
 pytest -s tests/test_factory.py -v
 pytest -s tests/test_db.py -v
+pytest -s tests/test_auth.py -v
 mysql -h localhost -P 3306 -u flask_user -p user123
 
 
@@ -27,9 +28,13 @@ Not able to see the cookie for the login page
 #####################################################################
 
 TO DO TASKS
-1>test scripts or code coverage
-2>2 factor authentication
-3>
+1>test scripts or code coverage - completed
+2>docker image to be created fo project
+3> create a github actions for buildng
+4> create a docker launch in the docker desktop
+5>try to create a projct structure so that we can add any aditional files/web pages  when required to the project easily.
+6>(best login type) 2 factor authentication
+
 ######################################################
 mysql> SELECT user FROM mysql.user;
 SELECT user, host FROM mysql.user WHERE host = '%';
