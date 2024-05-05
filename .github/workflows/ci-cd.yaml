@@ -18,6 +18,9 @@ jobs:
           MYSQL_DATABASE: my_test_database
           MYSQL_USER: flask_user
           MYSQL_PASSWORD: user123
+          DOCKER_CLI_EXPERIMENTAL: enabled
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -71,7 +74,3 @@ jobs:
           docker tag shivaprasad/my_flask_app:${BRANCH}-${DATE}-${VERSION} shivaprasad/my_flask_app:${BRANCH}-latest
           docker push shivaprasad/my_flask_app:${BRANCH}-latest
         fi
-      env:
-        DOCKER_CLI_EXPERIMENTAL: enabled
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
