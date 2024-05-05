@@ -1,6 +1,4 @@
 Flask
-logging
-sys
 mysql-connector-python
 click
 pytest
