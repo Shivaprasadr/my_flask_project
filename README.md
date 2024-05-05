@@ -2,7 +2,8 @@
 
 
 venv\Scripts\activate
-flask --app flaskr init-db
+(this db initialize should be done in new db creation if this is being run after the project was running good, Remove the query comment in sql file -- ALTER TABLE post DROP FOREIGN KEY post_ibfk_1;)
+flask --app flaskr init-db 
 flask --app flaskr run --debug
 pytest -s tests/test_factory.py -v
 pytest -s tests/test_db.py -v
@@ -29,14 +30,20 @@ Not able to see the cookie for the login page
 
 TO DO TASKS
 1>test scripts or code coverage - completed
-2>docker image to be created fo project
+2>docker image to be created for project
 3> create a github actions for buildng
 4> create a docker launch in the docker desktop
 5>try to create a projct structure so that we can add any aditional files/web pages  when required to the project easily.
 6>(best login type) 2 factor authentication
+7> remove the pwds and clean code.
 
 ######################################################
-mysql> SELECT user FROM mysql.user;
+for running the test coverage we need to create the database as its not created when the db docker was started
+login to the db with root access 
+
+CREATE DATABASE my_test_database;
+
+SELECT user FROM mysql.user;
 SELECT user, host FROM mysql.user WHERE host = '%';
 
 CREATE USER 'flask_user'@'%' IDENTIFIED BY 'user123';

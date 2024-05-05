@@ -15,3 +15,4 @@ build/
 
 creds.txt
 app.log
+set_env_variables.ps1
