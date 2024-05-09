@@ -26,9 +26,15 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
+    - name: Wait for MySQL service to be ready
+      run: |
+        for i in {1..10}; do
+          mysql -h localhost -u root -ppassword -e "SELECT 1;" && break
+          sleep 10
+        done
+
     - name: Grant all privileges to flask_user
       run: |
-        sleep 10
         mysql -h localhost -u root -ppassword -e "GRANT ALL PRIVILEGES ON my_test_database.* TO 'flask_user'@'%';"
 
     - name: Checkout repository
