@@ -12,30 +12,31 @@ jobs:
 
     services:
       mysql:
-        image: mysql:5.7
+        image: mysql:latest
         env:
           MYSQL_ROOT_PASSWORD: password
           MYSQL_DATABASE: my_test_database
           MYSQL_USER: flask_user
           MYSQL_PASSWORD: user123
-          DOCKER_CLI_EXPERIMENTAL: enabled
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+        options: --health-cmd="mysqladmin ping -h localhost" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
     - name: Wait for MySQL service to be ready
       run: |
         for i in {1..10}; do
-          mysql -h localhost -u root -ppassword -e "SELECT 1;" && break
+          if mysqladmin ping -h 127.0.0.1 -u root -ppassword --silent; then
+            echo "MySQL is up and running"
+            break
+          fi
+          echo "Waiting for MySQL to be ready... ($i/10)"
           sleep 10
         done
 
     - name: Grant all privileges to flask_user
       run: |
-        mysql -h localhost -u root -ppassword -e "GRANT ALL PRIVILEGES ON my_test_database.* TO 'flask_user'@'%';"
+        mysql -h 127.0.0.1 -u root -ppassword -e "GRANT ALL PRIVILEGES ON my_test_database.* TO 'flask_user'@'%';"
 
     - name: Checkout repository
       uses: actions/checkout@v2
