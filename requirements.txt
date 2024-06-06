@@ -3,3 +3,4 @@ mysql-connector-python
 click
 pytest
 coverage
+flask_session
