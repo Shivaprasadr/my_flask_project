@@ -102,6 +102,9 @@ jobs:
         # Build and push the Docker image
         docker buildx build --platform linux/amd64,linux/arm64 -t shivaprasad/my_flask_app:${SAFE_BRANCH}-${SAFE_DATE}-${VERSION} --push .
         
+        # Pull the image to ensure it is available locally
+        docker pull shivaprasad/my_flask_app:${SAFE_BRANCH}-${SAFE_DATE}-${VERSION}
+        
         # Tag and push the latest image if it's a push event
         if [ "${{ github.event_name }}" == 'push' ]; then
           docker tag shivaprasad/my_flask_app:${SAFE_BRANCH}-${SAFE_DATE}-${VERSION} shivaprasad/my_flask_app:${SAFE_BRANCH}-latest
