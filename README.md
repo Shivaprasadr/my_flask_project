@@ -36,6 +36,8 @@ TO DO TASKS
 5>try to create a projct structure so that we can add any aditional files/web pages  when required to the project easily.
 6>(best login type) 2 factor authentication
 7> remove the pwds and clean code.
+8> flash messsage are not working for register page /login in borwsers (https://stackoverflow.com/questions/30497236/python-flask-flash-not-working-correctly/30497806) (https://flask.palletsprojects.com/en/2.3.x/patterns/flashing/)(https://stackoverflow.com/questions/48847430/flash-messaging-not-working-in-flask)
+
 
 ######################################################
 for running the test coverage we need to create the database as its not created when the db docker was started

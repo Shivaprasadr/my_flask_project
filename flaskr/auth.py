@@ -1,19 +1,20 @@
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, g, redirect, render_template, request, session, url_for, current_app
 )
+import logging
 from werkzeug.security import check_password_hash, generate_password_hash
 from flaskr.db import get_db
-from mysql.connector import IntegrityError
+from mysql.connector.errors import IntegrityError
 import functools
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
+    error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        error = None
 
         if not username:
             error = 'Username is required.'
@@ -31,43 +32,56 @@ def register():
                 db.commit()
             except IntegrityError:
                 error = f"User {username} is already registered."
-            else:
-                return redirect(url_for("auth.login"))
             finally:
                 cursor.close()
 
-        flash(error)
+            if error is None:
+                return redirect(url_for("auth.login"))
 
-    return render_template('auth/register.html')
+        if error:
+            flash(error)
+
+    return render_template('auth/register.html', error=error)
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
+    error = None
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        error = None
 
         db = get_db()
         cursor = db.cursor(dictionary=True)
-        cursor.execute(
-            'SELECT id, password FROM user WHERE username = %s', (username,)
-        )
-        user = cursor.fetchone()
+        try:
+            logging.info(f"Attempting to fetch user with username: {username}")
+            
+            try:
+                cursor.execute('SELECT * FROM `user` WHERE username = %s', (username,))
+                user = cursor.fetchone()
+                logging.info(f"User fetched from database: {user}")
+            except Exception as e:
+                logging.error(f"Error executing query: {e}")
+                user = None
 
-        if user is None:
-            error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password.'
+            if user is None:
+                error = 'Incorrect username.'
+            elif not check_password_hash(user['password'], password):
+                error = 'Incorrect password.'
 
-        if error is None:
-            session.clear()
-            session['user_id'] = user['id']
-            return redirect(url_for('index'))
+            if error is None:
+                session.clear()
+                session['user_id'] = user['id']
+                current_app.logger.info(f"Session user_id set to {user['id']}")
+                print(f"Session after setting user_id: {session}")
+                return redirect(url_for('index'))
+        finally:
+            cursor.close()
 
-        flash(error)
-        cursor.close()
+        if error:
+            flash(error)
 
-    return render_template('auth/login.html')
+    return render_template('auth/login.html', error=error)
+
 
 @bp.before_app_request
 def load_logged_in_user():
@@ -87,6 +101,7 @@ def load_logged_in_user():
 @bp.route('/logout')
 def logout():
     session.clear()
+    flash('You have been logged out.')
     return redirect(url_for('index'))
 
 def login_required(view):

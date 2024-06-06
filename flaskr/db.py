@@ -1,7 +1,12 @@
+import logging
 import mysql.connector
 from flask import current_app, g
 from mysql.connector import Error
 import click
+
+
+# Get logger specific to db.py module
+logger = logging.getLogger(__name__)
 
 def get_db():
     if 'db' not in g:
@@ -15,7 +20,7 @@ def get_db():
             )
             g.db.autocommit = True
         except Error as e:
-            print("Error connecting to MySQL:", e)
+            logger.error("Error connecting to MySQL: %s", e)
             raise e
     return g.db
 
@@ -27,11 +32,23 @@ def close_db(e=None):
 def init_db():
     db = get_db()
     cursor = db.cursor()
+    # Disable foreign key checks
+    cursor.execute('SET foreign_key_checks = 0;')
     with current_app.open_resource('schema.sql') as f:
         sql_statements = f.read().decode('utf-8').split(';')
         for statement in sql_statements:
             if statement.strip():
-                cursor.execute(statement)
+                try:
+                    cursor.execute(statement)
+                    #logger.info("Table created: %s", statement.strip())
+                    if cursor.description:  # If result set
+                        rows = cursor.fetchall()
+                        columns = [col[0] for col in cursor.description]
+                        logger.info("Result of SQL statement: %s. Columns: %s, Rows: %s", statement.strip(), columns, rows)
+                    else:  # No result set, like INSERT, UPDATE, DELETE
+                        logger.info("Execution result of SQL statement: %s. Rows affected: %s", statement.strip(), cursor.rowcount)
+                except Exception as e:
+                    logger.error(f"Error executing SQL script: {e}")
     db.commit()
     #cursor.close()
 

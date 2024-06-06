@@ -3,7 +3,7 @@ from flaskr.config import TestConfig
 
 def test_config():
     assert not create_app().testing
-    assert create_app(TestConfig).testing
+    assert create_app(TestConfig, testing=True).testing
 
 def test_hello(client):
     response = client.get('/hello')

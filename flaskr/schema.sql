@@ -1,7 +1,8 @@
 -- ALTER TABLE post DROP FOREIGN KEY post_ibfk_1;
-
+SET foreign_key_checks = 0;
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS post;
+SET foreign_key_checks = 1;
 
 CREATE TABLE user (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -17,3 +18,5 @@ CREATE TABLE post (
   body TEXT NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
+
+SHOW TABLES FROM my_test_database;
