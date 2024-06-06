@@ -4,3 +4,4 @@ click
 pytest
 coverage
 flask_session
+pytest-cov
