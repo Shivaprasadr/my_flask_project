@@ -53,7 +53,7 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest
+        pytest -v
         pytest --cov-report=xml --cov=.
 
     - name: Upload coverage report
@@ -80,10 +80,24 @@ jobs:
       env:
         DATE: ${{ github.event.head_commit.timestamp }}
         VERSION: ${{ github.run_number }}
-        BRANCH: ${{ github.ref_slug }}
+        BRANCH: ${{ github.ref_name }}
       run: |
-        docker buildx build --platform linux/amd64,linux/arm64 -t shivaprasad/my_flask_app:${BRANCH}-${DATE}-${VERSION} --push .
-        if [ ${{ github.event_name }} == 'push' ]; then
-          docker tag shivaprasad/my_flask_app:${BRANCH}-${DATE}-${VERSION} shivaprasad/my_flask_app:${BRANCH}-latest
-          docker push shivaprasad/my_flask_app:${BRANCH}-latest
+        # Extract the branch name from the full ref (refs/heads/branch-name)
+        BRANCH_NAME=${BRANCH##*/}
+        # Sanitize the branch name to be a valid Docker tag
+        SAFE_BRANCH=$(echo "${BRANCH_NAME}" | sed -e 's/[^a-zA-Z0-9_.-]/-/g' | tr '[:upper:]' '[:lower:]')
+        
+        # Check if the branch name is empty
+        if [ -z "$SAFE_BRANCH" ]; then
+          echo "Branch name is empty. Exiting."
+          exit 1
+        fi
+        
+        # Build and push the Docker image
+        docker buildx build --platform linux/amd64,linux/arm64 -t shivaprasad/my_flask_app:${SAFE_BRANCH}-${DATE}-${VERSION} --push .
+        
+        # Tag and push the latest image if it's a push event
+        if [ "${{ github.event_name }}" == 'push' ]; then
+          docker tag shivaprasad/my_flask_app:${SAFE_BRANCH}-${DATE}-${VERSION} shivaprasad/my_flask_app:${SAFE_BRANCH}-latest
+          docker push shivaprasad/my_flask_app:${SAFE_BRANCH}-latest
         fi
