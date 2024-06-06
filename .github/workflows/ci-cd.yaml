@@ -20,28 +20,23 @@ jobs:
           MYSQL_PASSWORD: user123
         ports:
           - 3306:3306
-        options: > 
-          --health-cmd="mysqladmin ping -h localhost -u root -ppassword" 
-          --health-interval=10s 
-          --health-timeout=5s 
-          --health-retries=5
+        options: --health-cmd="mysqladmin ping -h localhost" --health-interval=10s --health-timeout=5s --health-retries=3
 
     steps:
     - name: Wait for MySQL service to be ready
       run: |
-        for i in {1..20}; do
-          if mysqladmin ping -h localhost -u root -ppassword; then
+        for i in {1..10}; do
+          if mysqladmin ping -h 127.0.0.1 -u root -ppassword --silent; then
             echo "MySQL is up and running"
             break
-          else
-            echo "Waiting for MySQL to be ready..."
-            sleep 5
           fi
+          echo "Waiting for MySQL to be ready... ($i/10)"
+          sleep 10
         done
 
     - name: Grant all privileges to flask_user
       run: |
-        mysql -h localhost -u root -ppassword -e "GRANT ALL PRIVILEGES ON my_test_database.* TO 'flask_user'@'%';"
+        mysql -h 127.0.0.1 -u root -ppassword -e "GRANT ALL PRIVILEGES ON my_test_database.* TO 'flask_user'@'%';"
 
     - name: Checkout repository
       uses: actions/checkout@v2
