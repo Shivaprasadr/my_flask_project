@@ -29,6 +29,7 @@ Not able to see the cookie for the login page
 #####################################################################
 
 TO DO TASKS
+0> remove flask session
 1>test scripts or code coverage - completed
 2>docker image to be created for project
 3> create a github actions for buildng
