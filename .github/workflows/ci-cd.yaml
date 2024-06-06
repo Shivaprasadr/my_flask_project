@@ -86,6 +86,8 @@ jobs:
         BRANCH_NAME=${BRANCH##*/}
         # Sanitize the branch name to be a valid Docker tag
         SAFE_BRANCH=$(echo "${BRANCH_NAME}" | sed -e 's/[^a-zA-Z0-9_.-]/-/g' | tr '[:upper:]' '[:lower:]')
+        # Sanitize the date format
+        SAFE_DATE=$(echo "${DATE}" | sed -e 's/[^a-zA-Z0-9_.-]/-/g')
         
         # Check if the branch name is empty
         if [ -z "$SAFE_BRANCH" ]; then
@@ -94,10 +96,10 @@ jobs:
         fi
         
         # Build and push the Docker image
-        docker buildx build --platform linux/amd64,linux/arm64 -t shivaprasad/my_flask_app:${SAFE_BRANCH}-${DATE}-${VERSION} --push .
+        docker buildx build --platform linux/amd64,linux/arm64 -t shivaprasad/my_flask_app:${SAFE_BRANCH}-${SAFE_DATE}-${VERSION} --push .
         
         # Tag and push the latest image if it's a push event
         if [ "${{ github.event_name }}" == 'push' ]; then
-          docker tag shivaprasad/my_flask_app:${SAFE_BRANCH}-${DATE}-${VERSION} shivaprasad/my_flask_app:${SAFE_BRANCH}-latest
+          docker tag shivaprasad/my_flask_app:${SAFE_BRANCH}-${SAFE_DATE}-${VERSION} shivaprasad/my_flask_app:${SAFE_BRANCH}-latest
           docker push shivaprasad/my_flask_app:${SAFE_BRANCH}-latest
         fi
