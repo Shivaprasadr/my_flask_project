@@ -1,11 +1,16 @@
 #!/bin/sh
 
-# Wait for the MySQL container to be ready
-echo "Waiting for MySQL..."
-while ! /usr/bin/ncat -z db 3306; do
-  sleep 1
-done
-echo "MySQL is up and running."
+# Function to check if the MySQL port is ready
+wait_for_mysql() {
+    echo "Waiting for MySQL..."
+    while ! nmap -p 3306 db | grep 3306 | grep "open" >/dev/null 2>&1; do
+        sleep 1
+    done
+    echo "MySQL is up and running."
+}
+
+# Wait for MySQL
+wait_for_mysql
 
 # Function to check if the database is already initialized
 check_db_initialized() {
