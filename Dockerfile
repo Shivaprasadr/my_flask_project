@@ -8,6 +8,9 @@ RUN pip install -r requirements.txt
 # Install nmap for the ncat command used in entrypoint.sh
 RUN apt-get update && apt-get install -y nmap && apt-get clean
 
+# Create a directory for cache files
+RUN mkdir /tmp/flask_cache
+
 COPY . .
 
 # Copy the entrypoint script and ensure it's executable

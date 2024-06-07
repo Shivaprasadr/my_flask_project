@@ -3,6 +3,7 @@ import logging
 from flask import Flask
 from flask_session import Session  # Import Flask-Session
 from flaskr.config import Config
+from cachelib.file import FileSystemCache  # Import FileSystemCache from CacheLib
 
 def create_app(config_class=Config, testing=False):
     # create and configure the app
@@ -30,6 +31,11 @@ def create_app(config_class=Config, testing=False):
 
     # Configure the session to use the filesystem
     app.config['SESSION_TYPE'] = 'filesystem'
+
+    app.config['SESSION_FILE_DIR'] = '/tmp/flask_cache'
+    cache = FileSystemCache(app.config['SESSION_FILE_DIR'])  # Create a FileSystemCache instance
+    app.config['SESSION_FILE_THRESHOLD'] = 500  # Optional: Set cache limit (number of items)
+
     # Initialize the session
     Session(app)
 

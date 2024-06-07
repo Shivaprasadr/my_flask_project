@@ -10,7 +10,12 @@ pytest -s tests/test_db.py -v
 pytest -s tests/test_auth.py -v
 mysql -h localhost -P 3306 -u flask_user -p user123
 
-
+### starting /stopping app from docker compose
+docker-compose up
+sto the dockare compose and delete containers = docker-compose down -v 
+run in backgorund command =  docker-compose up -d 
+ 
+### docker issues 
 172.17.0.2
 
 127.0.0.1
@@ -26,6 +31,19 @@ Solution: run this in workbench "ALTER TABLE post DROP FOREIGN KEY post_ibfk_1;"
 
 ##### sql error when starting the app in browser.
 mysql.connector.errors.ProgrammingError: 1146 (42S02): Table 'my_database.post' doesn't exist
+
+### OS type of the app
+# cat /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 12 (bookworm)"
+NAME="Debian GNU/Linux"
+VERSION_ID="12"
+VERSION="12 (bookworm)"
+VERSION_CODENAME=bookworm
+ID=debian
+HOME_URL="https://www.debian.org/"
+SUPPORT_URL="https://www.debian.org/support"
+BUG_REPORT_URL="https://bugs.debian.org/"
+
 
 
 
