@@ -2,7 +2,7 @@
 
 # Wait for the MySQL container to be ready
 echo "Waiting for MySQL..."
-while ! nc -z db 3306; do
+while ! ncat -z db 3306; do
   sleep 1
 done
 echo "MySQL is up and running."
