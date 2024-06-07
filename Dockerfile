@@ -5,8 +5,8 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
-# Install netcat for the health check in entrypoint.sh
-RUN apt-get update && apt-get install -y netcat-openbsd && apt-get clean
+# Install nmap for the ncat command used in entrypoint.sh
+RUN apt-get update && apt-get install -y nmap && apt-get clean
 
 COPY . .
 
