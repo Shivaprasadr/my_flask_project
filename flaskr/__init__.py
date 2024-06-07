@@ -32,9 +32,8 @@ def create_app(config_class=Config, testing=False):
     # Configure the session to use the filesystem
     app.config['SESSION_TYPE'] = 'filesystem'
 
-    app.config['SESSION_FILE_DIR'] = '/tmp/flask_cache'
-    cache = FileSystemCache(app.config['SESSION_FILE_DIR'])  # Create a FileSystemCache instance
-    app.config['SESSION_FILE_THRESHOLD'] = 500  # Optional: Set cache limit (number of items)
+    cache_dir = '/tmp/flask_cache'
+    app.config['SESSION_CACHELIB'] = FileSystemCache(cache_dir, threshold=500, mode=0600)
 
     # Initialize the session
     Session(app)
