@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  web:
+    image: shivaprasad/my_flask_app:shiva_branch-latest  # Build from the current directory
+    pull_policy: always
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_APP=flaskr
+      - FLASK_ENV=development
+      - MYSQL_HOST=db
+      - MYSQL_PORT=3306
+      - MYSQL_USER=flask_user
+      - MYSQL_PASSWORD=user123
+      - MYSQL_DB=my_database
+    depends_on:
+      - db
+
+  db:
+    image: mysql:latest
+    pull_policy: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: my_database
+      MYSQL_USER: flask_user
+      MYSQL_PASSWORD: user123
+    ports:
+      - "3306:3306"

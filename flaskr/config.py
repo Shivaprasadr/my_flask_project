@@ -1,22 +1,19 @@
-# config.py
+import os
 
 class Config:
-    # Your other configuration variables
-    # For example:
     DEBUG = True
 
     # MySQL database configuration
-    MYSQL_HOST = 'localhost'
-    MYSQL_PORT = 3306  # Default MySQL port
-    MYSQL_USER = 'flask_user'
-    MYSQL_PASSWORD = 'user123'
-    MYSQL_DB = 'my_database'
+    MYSQL_HOST = os.environ.get('MYSQL_HOST', 'localhost')
+    MYSQL_PORT = int(os.environ.get('MYSQL_PORT', 3306))
+    MYSQL_USER = os.environ.get('MYSQL_USER', 'flask_user')
+    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', 'user123')
+    MYSQL_DB = os.environ.get('MYSQL_DB', 'my_database')
 
 class TestConfig(Config):
-    # MySQL database configuration for testing
     TESTING = True
-    MYSQL_HOST = "localhost"
-    MYSQL_PORT = 3306
-    MYSQL_USER = 'flask_user'
-    MYSQL_PASSWORD = 'user123'
-    MYSQL_DB = 'my_test_database'
+    MYSQL_HOST = os.environ.get('MYSQL_HOST', 'localhost')
+    MYSQL_PORT = int(os.environ.get('MYSQL_PORT', 3306))
+    MYSQL_USER = os.environ.get('MYSQL_USER', 'flask_user')
+    MYSQL_PASSWORD = os.environ.get('MYSQL_PASSWORD', 'user123')
+    MYSQL_DB = os.environ.get('MYSQL_TEST_DB', 'my_test_database')

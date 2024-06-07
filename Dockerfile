@@ -5,6 +5,17 @@ WORKDIR /app
 COPY requirements.txt requirements.txt
 RUN pip install -r requirements.txt
 
+# Install nmap for the ncat command used in entrypoint.sh
+RUN apt-get update && apt-get install -y nmap && apt-get clean
+
 COPY . .
 
-CMD ["python", "app.py"]
+# Copy the entrypoint script and ensure it's executable
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Expose port 5000
+EXPOSE 5000
+
+# Use entrypoint.sh as the entry point
+ENTRYPOINT ["/entrypoint.sh"]
