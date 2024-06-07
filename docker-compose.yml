@@ -3,6 +3,7 @@ version: '3.8'
 services:
   web:
     image: shivaprasad/my_flask_app:shiva_branch-latest  # Build from the current directory
+    pull_policy: always
     ports:
       - "5000:5000"
     environment:
@@ -18,6 +19,7 @@ services:
 
   db:
     image: mysql:latest
+    pull_policy: always
     environment:
       MYSQL_ROOT_PASSWORD: root123
       MYSQL_DATABASE: my_database
