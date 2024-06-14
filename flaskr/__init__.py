@@ -33,7 +33,7 @@ def create_app(config_class=Config, testing=False):
     app.config['SESSION_TYPE'] = 'filesystem'
 
     cache_dir = '/tmp/flask_cache'
-    app.config['SESSION_CACHELIB'] = FileSystemCache(cache_dir, threshold=500, mode=0600)
+    app.config['SESSION_CACHELIB'] = FileSystemCache(cache_dir, threshold=500, mode=0o600)
 
     # Initialize the session
     Session(app)
