@@ -1,8 +1,9 @@
 import os
 import logging
 from flask import Flask
-from flask_session import Session  # Import Flask-Session
+from flask_session import Session
 from flaskr.config import Config
+from cachelib.file import FileSystemCache
 
 def create_app(config_class=Config, testing=False):
     # create and configure the app
@@ -23,13 +24,14 @@ def create_app(config_class=Config, testing=False):
         app.logger.info('Flask app initialized')
 
     app.config.from_object(config_class)
-#    app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
     # Ensure a secret key is set for sessions
     app.config['SECRET_KEY'] = os.urandom(24)
 
+    # Configure the session to use CacheLib
+    app.config['SESSION_TYPE'] = 'cachelib'
+    cache_dir = 'flask_session'
+    app.config['SESSION_CACHELIB'] = FileSystemCache(cache_dir=cache_dir, threshold=500, default_timeout=app.permanent_session_lifetime.total_seconds())
 
-    # Configure the session to use the filesystem
-    app.config['SESSION_TYPE'] = 'filesystem'
     # Initialize the session
     Session(app)
 
