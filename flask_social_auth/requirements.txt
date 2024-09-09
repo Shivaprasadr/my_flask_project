@@ -1,0 +1,8 @@
+Flask
+Flask-Dance
+Flask-Login
+Flask-SQLAlchemy
+SQLAlchemy-Utils
+python-dotenv
+blinker
+mysql-connector-python

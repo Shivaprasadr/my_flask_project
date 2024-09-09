@@ -52,16 +52,24 @@ Not able to see the cookie for the login page
 #####################################################################
 
 TO DO TASKS
-0> remove flask session
+0> remove flask session -
+ completed
 1>test scripts or code coverage - completed
-2>docker image to be created for project
-3> create a github actions for buildng
-4> create a docker launch in the docker desktop
-5>try to create a projct structure so that we can add any aditional files/web pages  when required to the project easily.
-6>(best login type) 2 factor authentication
-7> remove the pwds and clean code.
-8> flash messsage are not working for register page /login in borwsers (https://stackoverflow.com/questions/30497236/python-flask-flash-not-working-correctly/30497806) (https://flask.palletsprojects.com/en/2.3.x/patterns/flashing/)(https://stackoverflow.com/questions/48847430/flash-messaging-not-working-in-flask)
+2>docker image to be created for project - completed
+3> create a github actions for buildng - completed
+4> create a docker launch in the docker desktop - completed
+1> need to a best login method to the project.
+(That type of login is called Social Login or OAuth (Open Authorization) Login.
+flask-google-login: Handles Google login specifically.
+flask-microsoft: Integrates Microsoft login for your Flask app.
+)
+2>try to create a projct structure so that we can add any aditional files/web pages  when required to the project easily.
+3> remove the pwds and clean code.
+4> flash messsage are not working for register page /login in borwsers (https://stackoverflow.com/questions/30497236/python-flask-flash-not-working-correctly/30497806) (https://flask.palletsprojects.com/en/2.3.x/patterns/flashing/)(https://stackoverflow.com/questions/48847430/flash-messaging-not-working-in-flask)
+5> when usesrs increase we need to add the session cache to redis (from cachelib.redis import RedisCache)currently using from cachelib.file import FileSystemCache
 
+Testcases to do tasks
+1>
 
 ######################################################
 for running the test coverage we need to create the database as its not created when the db docker was started
@@ -113,6 +121,8 @@ docker volume ls
 docker images
 docker-compose up
 docker-compose down -v 
+docker-compose pull && docker-compose up
+
 ```
 ```
 

@@ -15,3 +15,4 @@ build/
 
 creds.txt
 app.log
+.env
