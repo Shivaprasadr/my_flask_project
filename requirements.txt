@@ -6,6 +6,7 @@ coverage
 flask_session
 pytest-cov
 cachelib
+Flask-Migrate
 #Flask==3.0.2
 # Flask-Dance==7.0.1
 # Flask-Login==0.6.3

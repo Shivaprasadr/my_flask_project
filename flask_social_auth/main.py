@@ -6,16 +6,24 @@ from app.models import User, OAuth
 from app.oauth import github_blueprint
 from dotenv import load_dotenv
 import os
+from flask_migrate import Migrate
 
 # Load environment variables from .env file
 load_dotenv()
 
+# Configure SQLAlchemy database URI (before create_app)
+SQLALCHEMY_DATABASE_URI = os.getenv("SQLALCHEMY_DATABASE_URI")
+SECRET_KEY = os.getenv("SECRET_KEY")
+
 # Create Flask application instance
 app = create_app()
-app.secret_key = os.getenv("SECRET_KEY")  # Set secret key for sessions
 
-# Configure SQLAlchemy database URI
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("SQLALCHEMY_DATABASE_URI")
+# Set app configuration (if not handled in create_app())
+app.config["SQLALCHEMY_DATABASE_URI"] = SQLALCHEMY_DATABASE_URI
+app.secret_key = SECRET_KEY  # Set secret key for sessions
+
+# Initialize Flask-Migrate
+migrate = Migrate(app, db)
 
 # Register GitHub blueprint
 app.register_blueprint(github_blueprint, url_prefix="/login")

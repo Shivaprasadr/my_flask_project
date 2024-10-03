@@ -99,3 +99,9 @@ This project is a Flask-based web application that enables social login via GitH
 - Visit `http://127.0.0.1:5000/` in your browser to see the application in action.
 
 This explanation should help you get back on track with your project!
+
+if any db changes needed , we need to update the modules and run the below migrsate comand
+flash db init
+flask db migrate -m "Added fields for GitHub user data"
+flask db upgrade
+
