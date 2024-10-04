@@ -49,8 +49,8 @@ def github_logged_in(blueprint, token):
             company = account_info.get("company", "")
             location = account_info.get("location", "")
             blog = account_info.get("blog", "")
-            followers = account_info.get("followers", "")
-            following = account_info.get("following", "")
+            followers = account_info.get("followers", 0)
+            following = account_info.get("following", 0)
             created_at = account_info.get("created_at", "")
             profile_url = account_info.get("html_url", "")
             email = account_info.get("email", "")
@@ -70,8 +70,8 @@ def github_logged_in(blueprint, token):
                 user.company = company if company not in [None, ""] else user.company
                 user.location = location if location not in [None, ""] else user.location
                 user.blog = blog if blog not in [None, ""] else user.blog
-                user.followers = followers if followers not in [None, ""] else user.followers
-                user.following = following if following not in [None, ""] else user.following
+                user.followers = followers if followers not in [None, "",0] else user.followers
+                user.following = following if following not in [None, "",0] else user.following
                 # Only update email if it is new or the user doesn't have one
                 if not user.email or user.email != email:
                     user.email = email
@@ -118,12 +118,6 @@ google_blueprint = make_google_blueprint(
         "openid",
         "https://www.googleapis.com/auth/userinfo.email",
         "https://www.googleapis.com/auth/userinfo.profile",
-        "https://www.googleapis.com/auth/user.phonenumbers.read",
-        "https://www.googleapis.com/auth/user.organization.read",
-        "https://www.googleapis.com/auth/user.gender.read",
-        "https://www.googleapis.com/auth/user.birthday.read",
-        "https://www.googleapis.com/auth/user.addresses.read",
-        "https://www.googleapis.com/auth/contacts.readonly"
     ],
     storage=SQLAlchemyStorage(
         OAuth,
@@ -163,8 +157,9 @@ def google_logged_in(blueprint, token):
             company = "None"
             location = "None"
             blog = "None"
-            followers = "None"
-            following = "None"
+            followers = "0"
+            following = "0"
+
             # Check if the user exists in the database
             query = User.query.filter_by(username=username)
             try:
@@ -180,8 +175,8 @@ def google_logged_in(blueprint, token):
                 user.company = company if company not in [None, ""] else user.company
                 user.location = location if location not in [None, ""] else user.location
                 user.blog = blog if blog not in [None, ""] else user.blog
-                user.followers = followers if followers not in [None, ""] else user.followers
-                user.following = following if following not in [None, ""] else user.following
+                user.followers = followers if followers not in [None, "",0] else user.followers
+                user.following = following if following not in [None, "",0] else user.following
 
                 # Only update email if it is new or the user doesn't have one
                 if not user.email or user.email != email:
