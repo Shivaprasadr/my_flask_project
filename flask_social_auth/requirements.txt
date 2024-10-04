@@ -6,3 +6,4 @@ SQLAlchemy-Utils
 python-dotenv
 blinker
 mysql-connector-python
+Flask-Migrate

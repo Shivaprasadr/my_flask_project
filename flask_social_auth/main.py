@@ -1,9 +1,10 @@
 from flask import Flask, jsonify, redirect, render_template, url_for
 from flask_dance.contrib.github import github
+from flask_dance.contrib.google import google
 from flask_login import logout_user, login_required, current_user
 from app import create_app, db
 from app.models import User, OAuth
-from app.oauth import github_blueprint
+from app.oauth import github_blueprint, google_blueprint  # Import both blueprints
 from dotenv import load_dotenv
 import os
 from flask_migrate import Migrate
@@ -25,8 +26,9 @@ app.secret_key = SECRET_KEY  # Set secret key for sessions
 # Initialize Flask-Migrate
 migrate = Migrate(app, db)
 
-# Register GitHub blueprint
+# Register OAuth blueprints
 app.register_blueprint(github_blueprint, url_prefix="/login")
+app.register_blueprint(google_blueprint, url_prefix="/google_login")
 
 # Ping route for testing purposes
 @app.route("/ping")
@@ -40,12 +42,21 @@ def homepage():
 
 # GitHub login route
 @app.route("/github")
-def login():
+def github_login():
     if not github.authorized:
         return redirect(url_for("github.login"))
     res = github.get("/user")
     username = res.json()["login"]
     return f"You are @{username} on GitHub"
+
+# Google login route
+@app.route("/google")
+def google_login():
+    if not google.authorized:
+        return redirect(url_for("google.login"))
+    res = google.get("/plus/v1/people/me")  # Change API if needed
+    username = res.json()["displayName"]
+    return f"You are {username} on Google"
 
 # Logout route
 @app.route("/logout")
