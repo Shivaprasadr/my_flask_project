@@ -1,0 +1,24 @@
+{% extends '_base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Register</h2>
+    <form method="POST" action="{{ url_for('register') }}">
+        {{ form.csrf_token() }}  <!-- Include the CSRF token here -->
+        <div class="mb-3">
+            <label for="username" class="form-label">Username</label>
+            {{ form.username(class="form-control", required=True) }}  <!-- Use form object -->
+        </div>
+        <div class="mb-3">
+            <label for="email" class="form-label">Email</label>
+            {{ form.email(class="form-control", required=True) }}  <!-- Use form object -->
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">Password</label>
+            {{ form.password(class="form-control", required=True) }}  <!-- Use form object -->
+        </div>
+        {{ form.submit(class="btn btn-primary") }}  <!-- Use form object -->
+    </form>
+    <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+</div>
+{% endblock content %}

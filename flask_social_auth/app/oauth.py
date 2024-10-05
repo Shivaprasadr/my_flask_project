@@ -54,7 +54,8 @@ def github_logged_in(blueprint, token):
             created_at = account_info.get("created_at", "")
             profile_url = account_info.get("html_url", "")
             email = account_info.get("email", "")
-            google_id = "None"
+            google_id = None  # Set to None for OAuth users
+
             # Check if the user exists in the database
             query = User.query.filter_by(username=username)
             try:
@@ -70,11 +71,15 @@ def github_logged_in(blueprint, token):
                 user.company = company if company not in [None, ""] else user.company
                 user.location = location if location not in [None, ""] else user.location
                 user.blog = blog if blog not in [None, ""] else user.blog
-                user.followers = followers if followers not in [None, "",0] else user.followers
-                user.following = following if following not in [None, "",0] else user.following
+                user.followers = followers if followers not in [None, "", 0] else user.followers
+                user.following = following if following not in [None, "", 0] else user.following
+                
                 # Only update email if it is new or the user doesn't have one
                 if not user.email or user.email != email:
                     user.email = email
+                
+                # Set password to None for OAuth users
+                user.password = None
                 
                 db.session.commit()
 
@@ -94,7 +99,8 @@ def github_logged_in(blueprint, token):
                     following=following,
                     created_at=created_at,
                     profile_url=profile_url,
-                    google_id=google_id
+                    google_id=google_id,
+                    password=None  # Password is None for OAuth users
                 )
                 db.session.add(user)
                 db.session.commit()
@@ -114,7 +120,7 @@ def github_logged_in(blueprint, token):
 google_blueprint = make_google_blueprint(
     client_id=os.getenv("GOOGLE_CLIENT_ID"),
     client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
-    scope = [
+    scope=[
         "openid",
         "https://www.googleapis.com/auth/userinfo.email",
         "https://www.googleapis.com/auth/userinfo.profile",
@@ -151,14 +157,14 @@ def google_logged_in(blueprint, token):
             name = account_info.get("name", "")
             email = account_info.get("email", "")
             profile_url = f"https://plus.google.com/{google_id}"
-            created_at = "None"
-            github_id = "None"
-            bio =  "None"
-            company = "None"
-            location = "None"
-            blog = "None"
-            followers = "0"
-            following = "0"
+            created_at = ""
+            github_id = ""
+            bio = ""
+            company = ""
+            location = ""
+            blog = ""
+            followers = ""
+            following = ""
 
             # Check if the user exists in the database
             query = User.query.filter_by(username=username)
@@ -175,12 +181,15 @@ def google_logged_in(blueprint, token):
                 user.company = company if company not in [None, ""] else user.company
                 user.location = location if location not in [None, ""] else user.location
                 user.blog = blog if blog not in [None, ""] else user.blog
-                user.followers = followers if followers not in [None, "",0] else user.followers
-                user.following = following if following not in [None, "",0] else user.following
+                user.followers = followers if followers not in [None, "", 0] else user.followers
+                user.following = following if following not in [None, "", 0] else user.following
 
                 # Only update email if it is new or the user doesn't have one
                 if not user.email or user.email != email:
                     user.email = email
+                
+                # Set password to None for OAuth users
+                user.password = None
                 
                 db.session.commit()
 
@@ -200,7 +209,8 @@ def google_logged_in(blueprint, token):
                     location=location,
                     blog=blog,
                     followers=followers,
-                    following=following
+                    following=following,
+                    password=None  # Password is None for OAuth users
                 )
                 db.session.add(user)
                 db.session.commit()

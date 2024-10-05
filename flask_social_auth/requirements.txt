@@ -7,3 +7,6 @@ python-dotenv
 blinker
 mysql-connector-python
 Flask-Migrate
+flask_bcrypt
+Flask-WTF
+email-validator

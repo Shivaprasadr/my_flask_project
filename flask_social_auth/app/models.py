@@ -12,7 +12,8 @@ class User(UserMixin, db.Model):
     github_id = db.Column(db.String(100), nullable=True)  
     google_id = db.Column(db.String(100), nullable=True)  
     
-    email = db.Column(db.String(150), nullable=True)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    password = db.Column(db.String(250), nullable=True)  # Password field for local users
     avatar_url = db.Column(db.String(250), nullable=True)
     name = db.Column(db.String(150), nullable=True)
     bio = db.Column(db.Text, nullable=True)

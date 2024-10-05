@@ -13,6 +13,12 @@ def create_app():
 
     db.init_app(app)
     login_manager.init_app(app)
+    login_manager.login_view = 'login'  # Redirects to login if user isn't authenticated
+
+    # Register OAuth blueprints
+    from .oauth import github_blueprint, google_blueprint
+    app.register_blueprint(github_blueprint, url_prefix='/github_login')
+    app.register_blueprint(google_blueprint, url_prefix='/google_login')
 
     from .models import User  # Import your models
     @login_manager.user_loader
