@@ -1,0 +1,46 @@
+docker run -d -p 3306:3306 --name my_mysql_db -e MYSQL_ROOT_PASSWORD=root123 -e MYSQL_DATABASE=my_database -e MYSQL_USER=flask_user -e MYSQL_PASSWORD=user123 mysql:latest
+
+
+venv\Scripts\activate
+
+
+To login inside the msql db docker
+ mysql -u flask_user -p my_database
+show databases;
+
+MYSQL_DATABASE=my_database
+MYSQL_ROOT_PASSWORD=root123
+MYSQL_USER=flask_user
+MYSQL_PASSWORD=user123
+
+class Config:
+    # Your other configuration variables
+    # For example:
+    DEBUG = True
+
+    # MySQL database configuration
+    MYSQL_HOST = 'localhost'
+    MYSQL_PORT = 3306  # Default MySQL port
+    MYSQL_USER = 'flask_user'
+    MYSQL_PASSWORD = 'user123'
+    MYSQL_DB = 'my_database'
+
+class TestConfig(Config):
+    # MySQL database configuration for testing
+    TESTING = True
+    MYSQL_HOST = "localhost"
+    MYSQL_PORT = 3306
+    MYSQL_USER = 'flask_user'
+    MYSQL_PASSWORD = 'user123'
+    MYSQL_DB = 'my_test_database'
+
+CODECOV_TOKEN = 1db0e395-7973-4f70-9663-ffe49e9177c0
+
+################################################################################################
+********************flask_social_auth********************
+flask_social_auth
+docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=root_password -e MYSQL_DATABASE=your_database -e MYSQL_USER=your_user -e MYSQL_PASSWORD=your_password -p 3306:3306 -d mysql:8.0
+docker run -d -p 3306:3306 --name my_mysql_db -e MYSQL_ROOT_PASSWORD=root123 -e MYSQL_DATABASE=my_social_auth_database -e MYSQL_USER=flask_user -e MYSQL_PASSWORD=user123 mysql:latest
+
+################################################################################################
+##################################################################################################

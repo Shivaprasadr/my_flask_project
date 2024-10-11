@@ -1,0 +1,29 @@
+name:  Microservices Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - shiva_branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: pip install cryptography
+
+    - name: Decrypt and Run
+      env:
+        SECRET_KEY: ${{ secrets.SECRET_KEY }}
+        ENVIRONMENT: gh_actions
+      run: python decrypt_and_run.py
