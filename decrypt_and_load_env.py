@@ -1,41 +1,68 @@
 import os
+import logging
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 
-def decrypt_file(input_file, output_file, key):
-    with open(input_file, 'rb') as f:
-        encrypted = f.read()
-    
-    fernet = Fernet(key)
-    decrypted = fernet.decrypt(encrypted)
-    
-    with open(output_file, 'wb') as f:
-        f.write(decrypted)
+# Configure logging to overwrite the log file for each run
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='decrypt_env.log', filemode='w')
 
-# Load the secret key
+# Add a stream handler to log to console as well
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
+logging.getLogger().addHandler(console_handler)
+
+logging.info("Starting decryption script")
+
+def decrypt_file_in_place(file_path, key):
+    try:
+        with open(file_path, 'rb') as f:
+            data = f.read()
+        
+        fernet = Fernet(key)
+        decrypted = fernet.decrypt(data)
+        
+        with open(file_path, 'wb') as f:
+            f.write(decrypted)
+        
+        logging.info(f"Successfully decrypted {file_path}")
+    except Exception as e:
+        logging.error(f"Failed to decrypt {file_path}: {e}")
+        raise
+
+# Load the secret key from an environment variable
 secret_key = os.getenv('SECRET_KEY')
 if not secret_key:
+    logging.error("SECRET_KEY environment variable not set")
     raise ValueError("SECRET_KEY environment variable not set")
+
 key = secret_key.encode()
 
-# Decrypt all .env files and creds.txt files
+# List of environments
+environments = ['development', 'workflow', 'production']
+
+# Decrypt the .env files for each environment in place
+# Commented out as per your request
+# for env in environments:
+#     file_path = f'.env.{env}'
+#     if os.path.exists(file_path):
+#         decrypt_file_in_place(file_path, key)
+#     else:
+#         logging.warning(f"{file_path} does not exist")
+
+# Decrypt any file starting with .env or named creds.txt in the repo directory in place
 repo_directory = '.'
 for root, dirs, files in os.walk(repo_directory):
     for file in files:
+        file_path = os.path.join(root, file)
         if file.startswith('.env') or file == 'creds.txt':
-            input_file = os.path.join(root, file)
-            output_file = os.path.join(root, file)
-            decrypt_file(input_file, output_file, key)
+            logging.info(f"Found file to decrypt: {file_path}")
+            try:
+                decrypt_file_in_place(file_path, key)
+            except Exception as e:
+                logging.error(f"Error decrypting file {file_path}: {e}")
+        else:
+            logging.debug(f"Skipping file: {file_path}")
 
-# Commented out environment-based decryption
-# Determine the environment
-# environment = os.getenv('ENVIRONMENT', 'development')
-
-# Decrypt the appropriate .env file
-# if environment == 'production':
-#     decrypt_file('.env.production.enc', '.env', key)
-# else:
-#     decrypt_file('.env.development.enc', '.env', key)
-
-# Load the .env file
-load_dotenv('.env')
+# Load the decrypted environment variables
+#load_dotenv()
