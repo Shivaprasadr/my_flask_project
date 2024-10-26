@@ -2,8 +2,27 @@ import os
 import logging
 from cryptography.fernet import Fernet
 
-# Configure logging to overwrite the log file for each run
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='encrypt_env.log', filemode='w')
+# Configure logging to log to both console and a file
+log_file_path = 'C:\\Temp\\encrypt_env.log'  # Specify the log file path
+
+# Create a logger
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+# Create a file handler
+file_handler = logging.FileHandler(log_file_path, mode='w')
+file_handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+
+# Create a console handler
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+console_handler.setFormatter(formatter)
+
+# Add the handlers to the logger
+logger.addHandler(file_handler)
+logger.addHandler(console_handler)
 
 def encrypt_file_in_place(file_path, key):
     try:
