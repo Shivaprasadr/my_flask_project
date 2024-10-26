@@ -8,6 +8,7 @@ pytest-cov
 cachelib
 Flask-Migrate
 cryptography
+pre-commit
 #Flask==3.0.2
 # Flask-Dance==7.0.1
 # Flask-Login==0.6.3

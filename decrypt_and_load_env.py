@@ -3,8 +3,13 @@ import logging
 from cryptography.fernet import Fernet
 from dotenv import load_dotenv
 
-# Configure logging to overwrite the log file for each run
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename='decrypt_env.log', filemode='w')
+# Get the directory of the current script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+log_file_path = 'C:\\Temp\\decrypt_env.log'
+
+
+# Configure logging to append to the log file if it exists, or create it if it doesn't
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename=log_file_path, filemode='a')
 
 # Add a stream handler to log to console as well
 console_handler = logging.StreamHandler()
