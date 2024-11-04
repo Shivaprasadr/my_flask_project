@@ -1,7 +1,7 @@
 import os
 import logging
 from cryptography.fernet import Fernet
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 # Get the directory of the current script
 script_dir = os.path.dirname(os.path.abspath(__file__))
