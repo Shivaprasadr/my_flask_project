@@ -1,0 +1,28 @@
+#!/bin/sh
+echo "Running post-commit Python scripts..."
+
+# Get a list of files committed in the last commit that match the naming pattern across all directories
+last_commit_files=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E '(^|/)(\.env.*|creds.txt)$')
+
+# Only run the decrypt script if there are matching files in the last commit
+if [ -n "$last_commit_files" ]; then
+    echo "Detected .env* or creds.txt files in the last commit. Running decryption script..."
+
+    # Run the Python decryption script
+    python_output=$(python git_commit_decrypt_secrets.py)
+
+    # Print the output of the Python script
+    echo "$python_output"
+
+    # Check for errors
+    if [ $? -ne 0 ]; then
+        echo "Failed to decrypt files."
+        exit 1
+    fi
+
+    echo "Decryption completed successfully for committed files."
+else
+    echo "No .env* or creds.txt files found in the last commit. Skipping decryption."
+fi
+
+exit 0
