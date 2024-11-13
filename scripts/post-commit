@@ -8,17 +8,18 @@ last_commit_files=$(git diff-tree --no-commit-id --name-only -r HEAD | grep -E '
 if [ -n "$last_commit_files" ]; then
     echo "Detected .env* or creds.txt files in the last commit. Running decryption script..."
 
-    # Run the Python decryption script
-    python_output=$(python git_commit_decrypt_secrets.py)
+    # Use a loop to pass each file to the Python decryption script individually
+    echo "$last_commit_files" | while IFS= read -r file; do
+        echo "Decrypting $file..."
+        python_output=$(python git_commit_decrypt_secrets.py "$file")
+        echo "$python_output"
 
-    # Print the output of the Python script
-    echo "$python_output"
-
-    # Check for errors
-    if [ $? -ne 0 ]; then
-        echo "Failed to decrypt files."
-        exit 1
-    fi
+        # Check for errors after each file
+        if [ $? -ne 0 ]; then
+            echo "Failed to decrypt file: $file"
+            exit 1
+        fi
+    done
 
     echo "Decryption completed successfully for committed files."
 else
