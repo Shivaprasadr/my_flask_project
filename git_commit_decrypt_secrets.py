@@ -1,34 +1,26 @@
 import os
+import sys
 import logging
 from cryptography.fernet import Fernet
-#from dotenv import load_dotenv
 
-# Get the directory of the current script
-script_dir = os.path.dirname(os.path.abspath(__file__))
-log_file_path = 'C:\\Temp\\decrypt_env.log'
-
-
-# Configure logging to append to the log file if it exists, or create it if it doesn't
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s', filename=log_file_path, filemode='a')
-
-# Add a stream handler to log to console as well
-console_handler = logging.StreamHandler()
-console_handler.setLevel(logging.INFO)
-console_handler.setFormatter(logging.Formatter('%(asctime)s - %(levelname)s - %(message)s'))
-logging.getLogger().addHandler(console_handler)
-
-logging.info("Starting decryption script")
+# Configure logging
+log_file_path = 'C:\\Temp\\decrypt_env.log'  # Specify the log file path
+logging.basicConfig(
+    filename=log_file_path,
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s'
+)
 
 def decrypt_file_in_place(file_path, key):
     try:
         with open(file_path, 'rb') as f:
-            data = f.read()
+            encrypted_data = f.read()
         
         fernet = Fernet(key)
-        decrypted = fernet.decrypt(data)
+        decrypted_data = fernet.decrypt(encrypted_data)
         
         with open(file_path, 'wb') as f:
-            f.write(decrypted)
+            f.write(decrypted_data)
         
         logging.info(f"Successfully decrypted {file_path}")
     except Exception as e:
@@ -43,31 +35,19 @@ if not secret_key:
 
 key = secret_key.encode()
 
-# List of environments
-environments = ['development', 'workflow', 'production']
+# Get the file path from the command line arguments
+if len(sys.argv) < 2:
+    logging.error("No file path specified for decryption")
+    raise ValueError("Please specify a file path to decrypt.")
 
-# Decrypt the .env files for each environment in place
-# Commented out as per your request
-# for env in environments:
-#     file_path = f'.env.{env}'
-#     if os.path.exists(file_path):
-#         decrypt_file_in_place(file_path, key)
-#     else:
-#         logging.warning(f"{file_path} does not exist")
+file_path = sys.argv[1]
 
-# Decrypt any file starting with .env or named creds.txt in the repo directory in place
-repo_directory = '.'
-for root, dirs, files in os.walk(repo_directory):
-    for file in files:
-        file_path = os.path.join(root, file)
-        if file.startswith('.env') or file == 'creds.txt':
-            logging.info(f"Found file to decrypt: {file_path}")
-            try:
-                decrypt_file_in_place(file_path, key)
-            except Exception as e:
-                logging.error(f"Error decrypting file {file_path}: {e}")
-        else:
-            logging.debug(f"Skipping file: {file_path}")
-
-# Load the decrypted environment variables
-#load_dotenv()
+# Decrypt the specified file if it matches the required pattern
+if os.path.exists(file_path) and (file_path.endswith('.env') or file_path.endswith('creds.txt')):
+    logging.info(f"Found file to decrypt: {file_path}")
+    try:
+        decrypt_file_in_place(file_path, key)
+    except Exception as e:
+        logging.error(f"Error decrypting file {file_path}: {e}")
+else:
+    logging.warning(f"{file_path} does not exist or does not match the required pattern")

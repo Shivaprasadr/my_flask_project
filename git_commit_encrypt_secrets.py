@@ -1,4 +1,5 @@
 import os
+import sys
 import logging
 from cryptography.fernet import Fernet
 
@@ -48,28 +49,19 @@ if not secret_key:
 
 key = secret_key.encode()
 
-# List of environments
-environments = ['development', 'workflow', 'production']
+# Get the file path from the command line arguments
+if len(sys.argv) < 2:
+    logging.error("No file path specified for encryption")
+    raise ValueError("Please specify a file path to encrypt.")
 
-# Encrypt the .env files for each environment in place
-# Commented out as per your request
-# for env in environments:
-#     file_path = f'.env.{env}'
-#     if os.path.exists(file_path):
-#         encrypt_file_in_place(file_path, key)
-#     else:
-#         logging.warning(f"{file_path} does not exist")
+file_path = sys.argv[1]
 
-# Encrypt any file starting with .env or named creds.txt in the repo directory in place
-repo_directory = '.'
-for root, dirs, files in os.walk(repo_directory):
-    for file in files:
-        file_path = os.path.join(root, file)
-        if file.startswith('.env') or file == 'creds.txt':
-            logging.info(f"Found file to encrypt: {file_path}")
-            try:
-                encrypt_file_in_place(file_path, key)
-            except Exception as e:
-                logging.error(f"Error encrypting file {file_path}: {e}")
-        else:
-            logging.debug(f"Skipping file: {file_path}")
+# Encrypt the specified file if it exists and matches the pattern
+if os.path.exists(file_path) and (file_path.endswith('.env') or file_path.endswith('creds.txt')):
+    logging.info(f"Found file to encrypt: {file_path}")
+    try:
+        encrypt_file_in_place(file_path, key)
+    except Exception as e:
+        logging.error(f"Error encrypting file {file_path}: {e}")
+else:
+    logging.warning(f"{file_path} does not exist or does not match the required pattern")
