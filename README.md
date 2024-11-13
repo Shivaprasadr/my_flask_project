@@ -127,3 +127,40 @@ docker-compose pull && docker-compose up
 ```
 
 ###############
+pre commit update is required and needs tested ( as its commiting creds and env each time we need to avoid it and commit it encrypting only when its updated or added for staging)
+
+
+#!/bin/sh
+echo "Running pre-commit Python scripts..."
+
+# Get a list of staged files that match the naming pattern
+staged_files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '(^|/)(\.env.*|creds.txt)$')
+
+# Encrypt only the matching staged files
+if [ -n "$staged_files" ]; then
+    echo "Encrypting staged files that match .env* or creds.txt pattern..."
+
+    # Use a while loop to safely handle each file path
+    echo "$staged_files" | while IFS= read -r file; do
+        # Run the Python encryption script on each file
+        echo "Encrypting $file..."
+        python encrypt_env.py "$file"  # Encrypts each file individually
+
+        # Re-stage the file after encryption
+        git add "$file"
+        echo "Re-staged: $file"
+    done
+
+    echo "Specific encrypted files re-staged successfully."
+else
+    echo "No matching .env* or creds.txt files found in staging."
+fi
+
+# Check for errors
+if [ $? -ne 0 ]; then
+    echo "Failed to stage encrypted files."
+    exit 1
+fi
+
+exit 0
+
