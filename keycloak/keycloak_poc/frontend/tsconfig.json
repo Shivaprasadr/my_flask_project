@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "jsx": "react-jsx",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "moduleResolution": "node16",  // updated to node16 for better resolution compatibility
+    "resolveJsonModule": true,
+    "typeRoots": [
+      "./node_modules/@types",   // Ensure type definitions are loaded from node_modules
+      "./node_modules/keycloak-js/lib"  // Add Keycloak type definition path
+    ],
+    "paths": {
+      "keycloak-js": ["node_modules/keycloak-js/lib/keycloak"]  // Explicit path for Keycloak JS
+    }
+  },
+  "include": ["src"]
+}

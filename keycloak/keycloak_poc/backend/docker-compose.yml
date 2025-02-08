@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      KEYCLOAK_SERVER_URL: http://keycloak:8080
+      KEYCLOAK_REALM_NAME: myrealm
+      KEYCLOAK_CLIENT_ID: client-api
+    depends_on:
+      - keycloak

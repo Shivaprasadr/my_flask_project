@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    environment:
+      VITE_KEYCLOAK_URL: http://keycloak:8080
+      VITE_KEYCLOAK_REALM: myrealm
+      VITE_KEYCLOAK_CLIENT: client-web
+    depends_on:
+      - keycloak
