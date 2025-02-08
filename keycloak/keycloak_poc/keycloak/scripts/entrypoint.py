@@ -14,6 +14,8 @@ def main():
     run_script("keycloak_config.py")
     run_script("keycloak_clients_config.py")
     print("Both scripts executed successfully.")
-
+    # After Keycloak is ready, run the Selenium test
+    print("Running the selenium test .....")
+    run_script("test_keycloak_config.py")
 if __name__ == "__main__":
     main()
