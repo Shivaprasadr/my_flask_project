@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  flask-api:
+    build:
+      context: .
+    ports:
+      - "4000:4000"
+    environment:
+      - FLASK_ENV=development
+      - SQLALCHEMY_DATABASE_URI=postgresql://user:password@db:5432/mydatabase
+    depends_on:
+      - db
+    networks:
+      - keycloak-auth_keycloak_network
+
+  db:
+    image: postgres:15
+    container_name: postgres-db
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mydatabase
+    ports:
+      - "5432:5432"
+    networks:
+      - keycloak-auth_keycloak_network
+
+networks:
+  keycloak-auth_keycloak_network:
+    external: true

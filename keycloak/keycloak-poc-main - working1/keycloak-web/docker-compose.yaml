@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  react-app:
+    build:
+      context: .
+    ports:
+      - '3000:3000'
+    env_file:
+      - .env
+    networks:
+      - keycloak-auth_keycloak_network
+networks:
+  keycloak-auth_keycloak_network:
+    external: true
