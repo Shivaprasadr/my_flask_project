@@ -1,3 +1,13 @@
+# Note and comments for my project update, I have tried to make the code successful if they are run in individual make files and not all at once
+
+# Note and comments for my project update, I have tried to make the code successful if they are run in individual make files and not all at once
+
+# Note and comments for my project update, I have tried to make the code successful if they are run in individual make files and not all at once
+
+# Note and comments for my project update, I have tried to make the code successful if they are run in individual make files and not all at once
+
+# Run first Keycloak and cnfigure the clients for weba nd api which is must be set and then start their respective dockers
+
 # Example of an Auth Service using Keycloak
 
 This is a example project to show a simple use case of Keycloack as auth service and how to interact with a web app and an api.
